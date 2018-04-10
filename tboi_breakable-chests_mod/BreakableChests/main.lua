@@ -1,29 +1,38 @@
 local BreakableChests = RegisterMod("BreakableChests" , 1)
 local game = Game()
 
-function BreakableChests:onPickupInit(pickup)
-    if pickup.Variant == PickupVariant.PICKUP_SPIKEDCHEST
-    or pickup.Variant == PickupVariant.PICKUP_MIMICCHEST then
-        --pickup.HitPoints = 12
-    end
-end
+local CHEST_HIT_DISTANCE = 15
+local CHEST_HIT_POINTS = 12
 
-function BreakableChests:onPickupCollision(pickup, collider)
-    if pickup.Variant == PickupVariant.PICKUP_SPIKEDCHEST
-    or pickup.Variant == PickupVariant.PICKUP_MIMICCHEST then
-        if collider.Type == EntityType.ENTITY_TEAR
-        or collider.Type == EntityType.ENTITY_LASER 
-        or collider.Type == EntityType.ENTITY_KNIFE then
-            --return true
-            return false
-        else
-            return nil
+function BreakableChests:onTearUpdate(tear)
+    local player = Isaac.GetPlayer(0)
+    local entities = Isaac:GetRoomEntities()
+    for ei, entity in pairs(entities) do
+        if entity.Type == EntityType.ENTITY_PICKUP then
+            if entity.Variant == PickupVariant.PICKUP_SPIKEDCHEST then
+                if entity.Position:Distance(tear.Position) < CHEST_HIT_DISTANCE then
+                    entity.HitPoints = entity.HitPoints - tear.BaseDamage
+                    tear:Kill()
+                    if entity.HitPoints < 1 then
+                        entity:Kill()
+                    end
+                end
+            end
         end
     end
 end
 
+
+function BreakableChests:onPickupInit(pickup)
+    if pickup.Variant == PickupVariant.PICKUP_SPIKEDCHEST
+    or pickup.Variant == PickupVariant.PICKUP_MIMICCHEST then
+        pickup.HitPoints = CHEST_HIT_POINTS
+    end
+end
+
+
 function BreakableChests:onEntityKilled(entity)
-    if (entity.Type == EntityType.ENTITY_PICKUP) then
+    if entity.Type == EntityType.ENTITY_PICKUP then
         if entity.Variant == PickupVariant.PICKUP_SPIKEDCHEST
         or entity.Variant == PickupVariant.PICKUP_MIMICCHEST then
             local pos = entity.Position
@@ -35,5 +44,5 @@ function BreakableChests:onEntityKilled(entity)
 end
 
 BreakableChests:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, BreakableChests.onPickupInit)
-BreakableChests:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, BreakableChests.onPickupCollision)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.onTearUpdate)
 BreakableChests:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, BreakableChests.onEntityKilled)
