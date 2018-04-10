@@ -21,6 +21,7 @@ Proof of concept works. I had to implement my own rudimentary collision detectio
 #### Todos
 * Tweak and cleanup the code now that I know what I want is possible
     * Investigate `Isaag.FindInRadius` function as we don't need all room entities and this could help keep things a bit lighter - we can just check for chests close to the tear and reduce the amount of work the collision detection has to do
+    * Make sure this works with brimstone/lasers/mom's knife/ipecac/etc
 * Feedback on hit
     * Chest should look like it takes damage
         * Damage flash?
