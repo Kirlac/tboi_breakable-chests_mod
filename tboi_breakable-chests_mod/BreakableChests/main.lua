@@ -10,11 +10,13 @@ function BreakableChests:onTearUpdate(tear)
     for ei, entity in pairs(entities) do
         if entity.Type == EntityType.ENTITY_PICKUP then
             if entity.Variant == PickupVariant.PICKUP_SPIKEDCHEST then
-                if entity.Position:Distance(tear.Position) < CHEST_HIT_DISTANCE then
-                    entity.HitPoints = entity.HitPoints - tear.BaseDamage
-                    tear:Kill()
-                    if entity.HitPoints < 1 then
-                        entity:Kill()
+                if entity.SubType == ChestSubType.CHEST_CLOSED then
+                    if entity.Position:Distance(tear.Position) < CHEST_HIT_DISTANCE then
+                        entity.HitPoints = entity.HitPoints - tear.BaseDamage
+                        tear:Kill()
+                        if entity.HitPoints < 1 then
+                            entity:Kill()
+                        end
                     end
                 end
             end
