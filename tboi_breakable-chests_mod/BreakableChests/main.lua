@@ -64,18 +64,36 @@ function BreakableChests:OnPickupInit(pickup)
 end
 
 
-function BreakableChests:onEntityKilled(entity)
+function BreakableChests:OnEntityKilled(entity)
     if entity.Type == EntityType.ENTITY_PICKUP then
-        if entity.Variant == PickupVariant.PICKUP_SPIKEDCHEST
-        or entity.Variant == PickupVariant.PICKUP_MIMICCHEST then
-            local pos = entity.Position
-            Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, pos, false)
+        for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
+            if entity.Variant == variant then
+                BreakableChests.DestroyChest(entity.Position)
+                return
+            end
         else
             return nil
         end
     end
 end
 
-BreakableChests:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, BreakableChests.onPickupInit)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.onTearUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, BreakableChests.onEntityKilled)
+function BreakableChests:DestroyChest(position)
+    local action = CHEST_DESTROYED_ACTION
+
+    if action == ChestDestroyedAction.NOTHING then
+        -- Do nothing
+    else if action == ChestDestroyedAction.SPAWN_POOP then
+        Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, pos, false)
+    else if action == ChestDestroyedAction.OPEN_CHEST then
+        -- TODO: Chest opening logic
+    end
+end
+
+BreakableChests:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, BreakableChests.OnPickupInit)
+
+BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.OnTearUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, BreakableChests.OnTearUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, BreakableChests.OnTearUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, BreakableChests.OnTearUpdate)
+
+BreakableChests:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, BreakableChests.OnEntityKilled)
