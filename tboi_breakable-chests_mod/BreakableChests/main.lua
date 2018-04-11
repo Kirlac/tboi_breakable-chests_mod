@@ -58,7 +58,7 @@ end
 
 function BreakableChests:OnPickupInit(pickup)
     for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
-        if entity.Variant == variant then
+        if pickup.Variant == variant then
             pickup.HitPoints = CHEST_HIT_POINTS
         end
     end
