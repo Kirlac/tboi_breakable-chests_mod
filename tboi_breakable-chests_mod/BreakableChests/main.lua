@@ -79,6 +79,7 @@ function BreakableChests:OnEntityKilled(entity)
 end
 
 function BreakableChests:DestroyChest(position)
+function BreakableChests:DestroyChest(chest)
     local action = CHEST_DESTROYED_ACTION
 
     if action == ChestDestroyedAction.NOTHING then
