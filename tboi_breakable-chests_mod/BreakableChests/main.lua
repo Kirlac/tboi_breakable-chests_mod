@@ -66,9 +66,14 @@ end
 
 function BreakableChests:DestroyChest(chest)
     local action = CHEST_DESTROYED_ACTION
+    if action == ChestDestroyedAction.RANDOM then
+        local rng = chest:GetDropRNG()
+        action = rng:RandomInt(ChestDestroyedAction.RANDOM)
+    end
 
     if action == ChestDestroyedAction.NOTHING then
         -- Do nothing
+        chest:Kill()
     elseif action == ChestDestroyedAction.SPAWN_POOP then
         chest:Kill()
         Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, chest.Position, false)
