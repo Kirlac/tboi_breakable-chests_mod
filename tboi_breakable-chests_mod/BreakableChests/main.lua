@@ -57,9 +57,10 @@ function BreakableChests.DamageChest(chest, damage, knockback)
 end
 
 function BreakableChests:OnPickupInit(pickup)
-    if pickup.Variant == PickupVariant.PICKUP_SPIKEDCHEST
-    or pickup.Variant == PickupVariant.PICKUP_MIMICCHEST then
-        pickup.HitPoints = CHEST_HIT_POINTS
+    for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
+        if entity.Variant == variant then
+            pickup.HitPoints = CHEST_HIT_POINTS
+        end
     end
 end
 
