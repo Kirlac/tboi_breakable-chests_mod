@@ -83,9 +83,9 @@ function BreakableChests:DestroyChest(position)
 
     if action == ChestDestroyedAction.NOTHING then
         -- Do nothing
-    else if action == ChestDestroyedAction.SPAWN_POOP then
+    elseif action == ChestDestroyedAction.SPAWN_POOP then
         Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, pos, false)
-    else if action == ChestDestroyedAction.OPEN_CHEST then
+    elseif action == ChestDestroyedAction.OPEN_CHEST then
         -- TODO: Chest opening logic
     end
 end
