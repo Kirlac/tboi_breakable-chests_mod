@@ -4,6 +4,7 @@ local game = Game()
 local CHEST_HIT_DISTANCE = 15
 local CHEST_HIT_POINTS = 12
 local CHEST_KNOCKBACK_MULTIPLIER = 4
+local COLOR_RED = Color(1, 0, 0, 1, 1, 1, 1)
 
 function BreakableChests:onTearUpdate(tear)
     local player = Isaac.GetPlayer(0)
@@ -18,6 +19,8 @@ function BreakableChests:onTearUpdate(tear)
                         tear:Kill()
                         if entity.HitPoints < 1 then
                             entity:Kill()
+                        else
+                            entity:SetColor(COLOR_RED, 1, 1, true, true)
                         end
                     end
                 end
