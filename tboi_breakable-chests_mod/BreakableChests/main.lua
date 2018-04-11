@@ -16,14 +16,14 @@ local CHEST_ENTITY_VARIANTS = {
     -- PickupVariant.PICKUP_LOCKEDCHEST
 }
 
-local CHEST_DESTROYED_ACTION = ChestDestroyedAction.RANDOM
-
 local ChestDestroyedAction = {
     NOTHING = 0,
     SPAWN_POOP = 1,
     OPEN_CHEST = 2,
     RANDOM = 3
 }
+
+local CHEST_DESTROYED_ACTION = ChestDestroyedAction.RANDOM
 
 function BreakableChests:OnTearUpdate(tear)
     local player = Isaac.GetPlayer(0)
