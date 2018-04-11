@@ -38,4 +38,5 @@ This mod can be run directly from the repository (without needing to copy to the
 * Better knockback based on stats rather than a hardcoded number
 * Verify seeded randomness works
     * Also weight the randomness for balance? eg. have a high chance for nothing and low chance for chest to break open
+* Sound effects?
 
