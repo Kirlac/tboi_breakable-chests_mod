@@ -48,11 +48,11 @@ end
 
 function BreakableChests.DamageChest(chest, damage, knockback)
     chest.HitPoints = chest.HitPoints - damage
-    chest:AddVelocity(knockback)
     if chest.HitPoints < 1 then
         BreakableChests:DestroyChest(chest)
     else
         chest:SetColor(COLOR_RED, 1, 1, true, true)
+        chest:AddVelocity(knockback)
     end
 end
 
