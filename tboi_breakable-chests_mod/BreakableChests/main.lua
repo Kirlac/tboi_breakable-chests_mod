@@ -50,7 +50,7 @@ function BreakableChests.DamageChest(chest, damage, knockback)
     chest.HitPoints = chest.HitPoints - damage
     chest:AddVelocity(knockback)
     if chest.HitPoints < 1 then
-        chest:Kill()
+        BreakableChests:DestroyChest(chest)
     else
         chest:SetColor(COLOR_RED, 1, 1, true, true)
     end
@@ -64,28 +64,14 @@ function BreakableChests:OnPickupInit(pickup)
     end
 end
 
-
-function BreakableChests:OnEntityKilled(entity)
-    if entity.Type == EntityType.ENTITY_PICKUP then
-        for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
-            if entity.Variant == variant then
-                BreakableChests.DestroyChest(entity)
-                return
-            else
-                return nil
-            end
-        end
-    end
-end
-
-function BreakableChests:DestroyChest(position)
 function BreakableChests:DestroyChest(chest)
     local action = CHEST_DESTROYED_ACTION
 
     if action == ChestDestroyedAction.NOTHING then
         -- Do nothing
     elseif action == ChestDestroyedAction.SPAWN_POOP then
-        Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, pos, false)
+        chest:Kill()
+        Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, chest.Position, false)
     elseif action == ChestDestroyedAction.OPEN_CHEST then
         -- TODO: Chest opening logic
     end
@@ -97,5 +83,3 @@ BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.On
 BreakableChests:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, BreakableChests.OnTearUpdate)
 BreakableChests:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, BreakableChests.OnTearUpdate)
 BreakableChests:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, BreakableChests.OnTearUpdate)
-
-BreakableChests:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, BreakableChests.OnEntityKilled)
