@@ -74,6 +74,7 @@ function BreakableChests:DestroyChest(chest)
         Isaac.GridSpawn(GridEntityType.GRID_POOP, 0, chest.Position, false)
     elseif action == ChestDestroyedAction.OPEN_CHEST then
         -- TODO: Chest opening logic
+        chest:ToPickup():TryOpenChest()
     end
 end
 
