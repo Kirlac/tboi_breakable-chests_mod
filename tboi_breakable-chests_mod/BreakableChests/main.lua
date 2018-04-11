@@ -68,11 +68,11 @@ function BreakableChests:OnEntityKilled(entity)
     if entity.Type == EntityType.ENTITY_PICKUP then
         for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
             if entity.Variant == variant then
-                BreakableChests.DestroyChest(entity.Position)
+                BreakableChests.DestroyChest(entity)
                 return
+            else
+                return nil
             end
-        else
-            return nil
         end
     end
 end
