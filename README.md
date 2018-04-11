@@ -19,6 +19,7 @@ This mod can be run directly from the repository (without needing to copy to the
 * Chest damage does not work with lasers, but does work with mom's knife, ipecac, compound fracture, chocolate milk, etc. 
     * Tech x works for the inner point, but not on the outer laser ring
     * Some of these interactions need to be tweaked a little as we are straight up killing the tear on contact but it should probably be handled better (research needed into how this normally works) so it can pass through if appropriate (eg for ouija board, polyphemus etc.) or bounce off (eg for rubber cement)
+* Also now I should longer be making commits from my work account!
 
 ### Update #1 - 2018-04-10
 #### Proof of concept works
