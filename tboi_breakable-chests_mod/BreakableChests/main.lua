@@ -3,6 +3,7 @@ local game = Game()
 
 local CHEST_HIT_DISTANCE = 15
 local CHEST_HIT_POINTS = 12
+local CHEST_KNOCKBACK_MULTIPLIER = 4
 
 function BreakableChests:onTearUpdate(tear)
     local player = Isaac.GetPlayer(0)
@@ -12,7 +13,8 @@ function BreakableChests:onTearUpdate(tear)
             if entity.Variant == PickupVariant.PICKUP_SPIKEDCHEST then
                 if entity.SubType == ChestSubType.CHEST_CLOSED then
                     if entity.Position:Distance(tear.Position) < CHEST_HIT_DISTANCE then
-                        entity.HitPoints = entity.HitPoints - tear.BaseDamage
+                        entity.HitPoints = entity.HitPoints - player.Damage
+                        entity:AddVelocity(tear.Velocity:__div(CHEST_KNOCKBACK_MULTIPLIER))
                         tear:Kill()
                         if entity.HitPoints < 1 then
                             entity:Kill()
