@@ -26,33 +26,70 @@ local ChestDestroyedAction = {
 local CHEST_DESTROYED_ACTION = ChestDestroyedAction.RANDOM
 
 function BreakableChests:OnTearUpdate(tear)
-    local player = Isaac.GetPlayer(0)
+    local collides = BreakableChests:CheckCollision(tear.Position, tear.Velocity)
+    if collides == true then
+        tear:Kill()
+    end
+end
+
+function BreakableChests:OnLaserUpdate(laser)
+    if laser:IsSampleLaser() then
+        local samples = laser:GetNonOptimizedSamples()
+        local len = samples:__len()
+        for i=0,len-1,1 do
+            local s = samples:Get(i)
+            local collides = BreakableChests:CheckCollision(s)
+            if collides == true then
+                -- Laser doesn't die
+                return
+            end
+        end
+    end
+end
+
+function BreakableChests:OnKnifeUpdate(knife)
+    local collides = BreakableChests:CheckCollision(knife.Position, knife.Velocity)
+    if collides == true then
+        -- Knife doesn't die
+    end
+end
+
+function BreakableChests:OnProjectileUpdate(projectile)
+    local collides = BreakableChests:CheckCollision(projectile.Position, projectile.Velocity)
+    if collides == true then
+        projectile:Kill()
+    end
+end
+
+function BreakableChests:CheckCollision(tearPosition)
     local entities = Isaac:GetRoomEntities()
     for ei, entity in pairs(entities) do
         if entity.Type == EntityType.ENTITY_PICKUP then
             for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
                 if entity.Variant == variant then
                     if entity.SubType == ChestSubType.CHEST_CLOSED then
-                        if entity.Position:Distance(tear.Position) < CHEST_HIT_DISTANCE then
-                            local knockback = tear.Velocity:__div(CHEST_KNOCKBACK_MULTIPLIER)
-                            BreakableChests.DamageChest(entity, player.Damage, knockback)
-                            tear:Kill()
-                            return
+                        if entity.Position:Distance(tearPosition) < CHEST_HIT_DISTANCE then
+                            local player = Isaac.GetPlayer(0)
+                            local knockback = nil
+                            --local knockback = tearVelocity:__div(CHEST_KNOCKBACK_MULTIPLIER)
+                            BreakableChests:DamageChest(entity, player.Damage, knockback)
+                            return true
                         end
                     end
                 end
             end
         end
     end
+    return false
 end
 
-function BreakableChests.DamageChest(chest, damage, knockback)
+function BreakableChests:DamageChest(chest, damage, knockback)
     chest.HitPoints = chest.HitPoints - damage
     if chest.HitPoints < 1 then
         BreakableChests:DestroyChest(chest)
     else
         chest:SetColor(COLOR_RED, 1, 1, true, true)
-        chest:AddVelocity(knockback)
+        --chest:AddVelocity(knockback)
     end
 end
 
@@ -86,6 +123,6 @@ end
 BreakableChests:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, BreakableChests.OnPickupInit)
 
 BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.OnTearUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, BreakableChests.OnTearUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, BreakableChests.OnTearUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, BreakableChests.OnTearUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, BreakableChests.OnLaserUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, BreakableChests.OnKnifeUpdate)
+BreakableChests:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, BreakableChests.OnProjectileUpdate)
