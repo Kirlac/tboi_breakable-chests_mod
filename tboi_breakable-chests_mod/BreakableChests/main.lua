@@ -5,6 +5,7 @@ local CHEST_HIT_DISTANCE = 15
 local CHEST_HIT_POINTS = 12
 local CHEST_KNOCKBACK_MULTIPLIER = 4
 local COLOR_RED = Color(1, 0, 0, 1, 1, 1, 1)
+local ISAAC_REACTS = true
 
 -- Uncomment chest types below to enable them to be shot
 local CHEST_ENTITY_VARIANTS = {
@@ -97,11 +98,19 @@ function BreakableChests:OnPickupInit(pickup)
     for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
         if pickup.Variant == variant then
             pickup.HitPoints = CHEST_HIT_POINTS
+            if ISAAC_REACTS then
+                local player = Isaac.GetPlayer(0)
+                player:AnimateSad()
+            end
         end
     end
 end
 
 function BreakableChests:DestroyChest(chest)
+    if ISAAC_REACTS then
+        local player = Isaac.GetPlayer(0)
+        player:AnimateHappy()
+    end
     local action = CHEST_DESTROYED_ACTION
     if action == ChestDestroyedAction.RANDOM then
         local rng = chest:GetDropRNG()
