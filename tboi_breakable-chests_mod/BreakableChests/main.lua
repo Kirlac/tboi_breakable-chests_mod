@@ -24,7 +24,7 @@ local ChestDestroyedAction = {
     RANDOM = 3
 }
 
-local CHEST_DESTROYED_ACTION = ChestDestroyedAction.RANDOM
+local CHEST_DESTROYED_ACTION = ChestDestroyedAction.OPEN_CHEST
 
 function TBOC:OnTearUpdate(tear)
     local collides = TBOC:CheckCollision(tear.Position, tear.Velocity)
@@ -39,6 +39,15 @@ function TBOC:OnLaserUpdate(laser)
         local len = samples:__len()
         for i=0,len-1,1 do
             local s = samples:Get(i)
+            -- Get previous/next sample to calculate velocity
+            local velocity
+            if (i > 1) then
+                -- Calculate difference between this sample and previous
+                velocity = s:__sub(samples:Get(i-1))
+            else
+                -- Calculate difference between next sample and this one
+                velocity =  samples:Get(i+1):__sub(s)
+            end
             local collides = TBOC:CheckCollision(s, velocity)
             if collides == true then
                 -- Laser doesn't die
@@ -71,8 +80,7 @@ function TBOC:CheckCollision(tearPosition, velocity)
                     if entity.SubType == ChestSubType.CHEST_CLOSED then
                         if entity.Position:Distance(tearPosition) < CHEST_HIT_DISTANCE then
                             local player = Isaac.GetPlayer(0)
-                            local knockback = nil
-                            --local knockback = tearVelocity:__div(CHEST_KNOCKBACK_MULTIPLIER)
+                            local knockback = velocity:__div(CHEST_KNOCKBACK_MULTIPLIER)
                             TBOC:DamageChest(entity, player.Damage, knockback)
                             return true
                         end
@@ -90,7 +98,7 @@ function TBOC:DamageChest(chest, damage, knockback)
         TBOC:DestroyChest(chest)
     else
         chest:SetColor(COLOR_RED, 1, 1, true, true)
-        --chest:AddVelocity(knockback)
+        chest:AddVelocity(knockback)
     end
 end
 
