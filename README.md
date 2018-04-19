@@ -1,4 +1,4 @@
-#  The Binding of Isaac: Afterbirth+ - Breakable Chests mod
+#  The Breaking of Chests
 
 This is a mod for The Binding of Isaac: Afterbirth+ to allow spiked/mimic chests to be broken by shooting them similar to how poop/fireplaces can be destroyed.
 
