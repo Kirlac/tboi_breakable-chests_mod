@@ -1,4 +1,4 @@
-local BreakableChests = RegisterMod("BreakableChests" , 1)
+local TBOC = RegisterMod("TBOC", 1)
 local game = Game()
 
 local CHEST_HIT_DISTANCE = 15
@@ -26,20 +26,20 @@ local ChestDestroyedAction = {
 
 local CHEST_DESTROYED_ACTION = ChestDestroyedAction.RANDOM
 
-function BreakableChests:OnTearUpdate(tear)
-    local collides = BreakableChests:CheckCollision(tear.Position, tear.Velocity)
+function TBOC:OnTearUpdate(tear)
+    local collides = TBOC:CheckCollision(tear.Position, tear.Velocity)
     if collides == true then
         tear:Kill()
     end
 end
 
-function BreakableChests:OnLaserUpdate(laser)
+function TBOC:OnLaserUpdate(laser)
     if laser:IsSampleLaser() then
         local samples = laser:GetNonOptimizedSamples()
         local len = samples:__len()
         for i=0,len-1,1 do
             local s = samples:Get(i)
-            local collides = BreakableChests:CheckCollision(s)
+            local collides = TBOC:CheckCollision(s, velocity)
             if collides == true then
                 -- Laser doesn't die
                 return
@@ -48,21 +48,21 @@ function BreakableChests:OnLaserUpdate(laser)
     end
 end
 
-function BreakableChests:OnKnifeUpdate(knife)
-    local collides = BreakableChests:CheckCollision(knife.Position, knife.Velocity)
+function TBOC:OnKnifeUpdate(knife)
+    local collides = TBOC:CheckCollision(knife.Position, knife.Velocity)
     if collides == true then
         -- Knife doesn't die
     end
 end
 
-function BreakableChests:OnProjectileUpdate(projectile)
-    local collides = BreakableChests:CheckCollision(projectile.Position, projectile.Velocity)
+function TBOC:OnProjectileUpdate(projectile)
+    local collides = TBOC:CheckCollision(projectile.Position, projectile.Velocity)
     if collides == true then
         projectile:Kill()
     end
 end
 
-function BreakableChests:CheckCollision(tearPosition)
+function TBOC:CheckCollision(tearPosition, velocity)
     local entities = Isaac:GetRoomEntities()
     for ei, entity in pairs(entities) do
         if entity.Type == EntityType.ENTITY_PICKUP then
@@ -73,7 +73,7 @@ function BreakableChests:CheckCollision(tearPosition)
                             local player = Isaac.GetPlayer(0)
                             local knockback = nil
                             --local knockback = tearVelocity:__div(CHEST_KNOCKBACK_MULTIPLIER)
-                            BreakableChests:DamageChest(entity, player.Damage, knockback)
+                            TBOC:DamageChest(entity, player.Damage, knockback)
                             return true
                         end
                     end
@@ -84,17 +84,17 @@ function BreakableChests:CheckCollision(tearPosition)
     return false
 end
 
-function BreakableChests:DamageChest(chest, damage, knockback)
+function TBOC:DamageChest(chest, damage, knockback)
     chest.HitPoints = chest.HitPoints - damage
     if chest.HitPoints < 1 then
-        BreakableChests:DestroyChest(chest)
+        TBOC:DestroyChest(chest)
     else
         chest:SetColor(COLOR_RED, 1, 1, true, true)
         --chest:AddVelocity(knockback)
     end
 end
 
-function BreakableChests:OnPickupInit(pickup)
+function TBOC:OnPickupInit(pickup)
     for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
         if pickup.Variant == variant then
             pickup.HitPoints = CHEST_HIT_POINTS
@@ -106,7 +106,7 @@ function BreakableChests:OnPickupInit(pickup)
     end
 end
 
-function BreakableChests:DestroyChest(chest)
+function TBOC:DestroyChest(chest)    
     if ISAAC_REACTS then
         local player = Isaac.GetPlayer(0)
         player:AnimateHappy()
@@ -129,9 +129,9 @@ function BreakableChests:DestroyChest(chest)
     end
 end
 
-BreakableChests:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, BreakableChests.OnPickupInit)
+TBOC:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, TBOC.OnPickupInit)
 
-BreakableChests:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, BreakableChests.OnTearUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, BreakableChests.OnLaserUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, BreakableChests.OnKnifeUpdate)
-BreakableChests:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, BreakableChests.OnProjectileUpdate)
+TBOC:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, TBOC.OnTearUpdate)
+TBOC:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, TBOC.OnLaserUpdate)
+TBOC:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, TBOC.OnKnifeUpdate)
+TBOC:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, TBOC.OnProjectileUpdate)
