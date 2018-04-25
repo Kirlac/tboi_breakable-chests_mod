@@ -26,6 +26,10 @@ local ChestDestroyedAction = {
 
 local CHEST_DESTROYED_ACTION = ChestDestroyedAction.OPEN_CHEST
 
+function HasFlag(value, flag)
+    return value & flag == flag
+end
+
 function TBOC:OnTearUpdate(tear)
     local collides = TBOC:CheckCollision(tear.Position, tear.Velocity)
     if collides == true then
