@@ -97,7 +97,15 @@ end
 function TBOC:OnTearUpdate(tear)
     local collides = TBOC:CheckCollision(tear.Position, tear.Velocity)
     if collides == true then
-        tear:Kill()
+        local tearFlags = tear.TearFlags
+        if HasFlag(tearFlags, TearFlags.TEAR_SPECTRAL) 
+        or HasFlag(tearFlags, TearFlags.TEAR_PIERCING) then
+            Isaac.DebugString("Pass through")
+        elseif HasFlag(tearFlags, TearFlags.TEAR_BOUNCE) then
+           Isaac.DebugString("Bouncy!")
+        else
+            tear:Kill()
+        end
     end
 end
 
