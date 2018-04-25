@@ -110,10 +110,6 @@ function TBOC:OnPickupInit(pickup)
     for _, variant in pairs(CHEST_ENTITY_VARIANTS) do
         if pickup.Variant == variant then
             pickup.HitPoints = CHEST_HIT_POINTS
-            if ISAAC_REACTS then
-                local player = Isaac.GetPlayer(0)
-                player:AnimateSad()
-            end
         end
     end
 end
